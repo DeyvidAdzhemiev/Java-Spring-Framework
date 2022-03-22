@@ -2,6 +2,7 @@ package com.university.studentservice.service;
 
 
 import com.university.studentservice.entity.Student;
+import com.university.studentservice.feignClients.AddressFeignClient;
 import com.university.studentservice.repository.StudentRepository;
 import com.university.studentservice.request.CreateStudentRequest;
 import com.university.studentservice.response.AddressResponse;
@@ -20,6 +21,8 @@ public class StudentService {
     @Autowired
     WebClient webClient;
 
+    @Autowired
+    AddressFeignClient addressFeignClient;
 
     public StudentResponse createStudent(CreateStudentRequest createStudentRequest) {
 
@@ -33,7 +36,10 @@ public class StudentService {
 
         StudentResponse studentResponse = new StudentResponse(student);
 
-        studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
+        //studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
+
+        studentResponse.setAddressResponse(addressFeignClient.getById(student.getAddressId()));
+
         return studentResponse;
     }
 
@@ -41,7 +47,9 @@ public class StudentService {
         Student student = studentRepository.findById(id).get();
         StudentResponse studentResponse = new StudentResponse(student);
 
-        studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
+      //  studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
+
+        studentResponse.setAddressResponse(addressFeignClient.getById(student.getAddressId()));
 
         return studentResponse;
     }
